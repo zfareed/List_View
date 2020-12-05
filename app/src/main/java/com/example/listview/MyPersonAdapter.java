@@ -21,6 +21,7 @@ public class MyPersonAdapter extends ArrayAdapter {
     private ArrayList<Person> data;
 
 
+
     public MyPersonAdapter(@NonNull Context context, int resource, @NonNull ArrayList<Person> objects) {
         super(context, resource, objects);
 
@@ -29,21 +30,46 @@ public class MyPersonAdapter extends ArrayAdapter {
         data = objects;
     }
 
+
+    public void add(@Nullable Person person) {
+             data.add(person);
+             notifyDataSetChanged();
+    }
+
+    public void remove(int position){
+          data.remove(position);
+          notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
         View view;
-        LayoutInflater inflater = LayoutInflater.from(context);
-        view = inflater.inflate(layout,parent,false);
-        TextView firstName = view.findViewById(R.id.firstname);
-        TextView lastName = view.findViewById(R.id.lastname);
+        ViewHolder holder;
+        if (convertView!=null){
+            view=convertView;
+            holder = (ViewHolder) view.getTag();
+        }
+        else {
+            LayoutInflater inflater = LayoutInflater.from(context);
+            view = inflater.inflate(layout,parent,false);
+            holder = new ViewHolder();
+            holder.firstName = view.findViewById(R.id.firstname);
+            holder.lastName = view.findViewById(R.id.lastname);
+            view.setTag(holder);
+        }
+
 
         Person p=data.get(position);
 
-        firstName.setText(p.firstName);
-        lastName.setText(p.lastName);
+        holder.firstName.setText(p.firstName);
+        holder.lastName.setText(p.lastName);
 
         return view;
+    }
+
+    static class ViewHolder {
+            TextView firstName, lastName;
     }
 }
